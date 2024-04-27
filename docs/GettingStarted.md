@@ -1,14 +1,14 @@
 # Getting Started
 
->[Python tutorial for beginners.](https://www.liaoxuefeng.com/wiki/1016959663602400)
->[Python Tutorial](https://docs.python.org/zh-cn/3/tutorial/index.html)
->[Python Language Reference - gives a more formal definition of the language.](https://docs.python.org/zh-cn/3/reference/index.html#reference-index)
->[Python Packaging User Guide](https://packaging.python.org/en/latest/tutorials/packaging-projects/)
->[Python Unittest](https://docs.python.org/zh-cn/3/library/unittest.html)
->[Pyahocorasick - a fast and memory efficient library for exact or approximate multi-pattern string search.](https://pyahocorasick.readthedocs.io/en/latest/)
->[bisect - Array bisection algorithm](<https://docs.python.org/zh-cn/2/library/bisect.html> - to maintain a sorted list. )
->[Sorted containers.](https://grantjenks.com/docs/sortedcontainers/)
->[Python functions](https://docs.python.org/zh-cn/3/library/functions.html#enumerate)
+> - [Python tutorial for beginners.](https://www.liaoxuefeng.com/wiki/1016959663602400)
+> - [Python Tutorial](https://docs.python.org/zh-cn/3/tutorial/index.html)
+> - [Python Language Reference - gives a more formal definition of the language.](https://docs.python.org/zh-cn/3/reference/index.html#reference-index)
+> - [Python Packaging User Guide](https://packaging.python.org/en/latest/tutorials/packaging-projects/)
+> - [Python Unittest](https://docs.python.org/zh-cn/3/library/unittest.html)
+> - [Pyahocorasick - a fast and memory efficient library for exact or approximate multi-pattern string search.](https://pyahocorasick.readthedocs.io/en/latest/)
+> - [bisect - Array bisection algorithm - to implement a sorted list.](https://docs.python.org/zh-cn/2/library/bisect.html)
+> - [Sorted containers.](https://grantjenks.com/docs/sortedcontainers/)
+> - [Python functions](https://docs.python.org/zh-cn/3/library/functions.html#enumerate)
 
 ## Setting up
 
@@ -95,23 +95,31 @@ for module_name, module in sys.modules.items():
 
 - [Reserved classes of identifiers.](https://docs.python.org/3/reference/lexical_analysis.html#reserved-classes-of-identifiers)
   - [Private name mangling.](https://docs.python.org/3/reference/expressions.html#atom-identifiers)
+  - [Private Variables of classes.](https://docs.python.org/3/tutorial/classes.html#private-variables)
 
 **Reserved classes of identifiers**
 
 Certain classes of identifiers(besides keywords) have speical meanings. These classes are identified by the partterns of leading and trailing underscore characters:
 
 `_*`:
+
 Not imported by `from module import *`.
 
 `_`:
+
 In a case pattern within a [match](https://docs.python.org/3/reference/compound_stmts.html#match) statement, `_` is a [soft keyword](https://docs.python.org/3/reference/lexical_analysis.html#soft-keywords) that denotes a [wildcard](https://docs.python.org/3/reference/compound_stmts.html#wildcard-patterns).
+
 Separately, the interactive interpreter makes the result of the last evaluation available in the variable `_`. (It is stored in the [builtins](https://docs.python.org/3/library/builtins.html#module-builtins) module,  alongside built-in functions like `print`.)
 
 `__*__`:
+
 System-defined names, informally known as “dunder” names. These names are defined by the interpreter and its implementation (including the standard library). Current system names are discussed in the [Special method names](https://docs.python.org/3/reference/datamodel.html#specialnames) section and elsewhere. More will likely be defined in future versions of Python. _Any_ use of `__*__` names, in any context, that does not follow explicitly documented use, is subject to breakage without warning.
 
 `__*`:
+
 Class-private names. Names in this category, when used within the context of a class definition, are re-written to use a mangled form to help avoid name clashes between “private” attributes of base and derived classes. See section [Identifiers (Names)](https://docs.python.org/3/reference/expressions.html#atom-identifiers).
+
+[Private Variables of classes.](https://docs.python.org/3/tutorial/classes.html#private-variables)
 
 ## Data Type
 
