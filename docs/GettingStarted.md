@@ -119,7 +119,6 @@ System-defined names, informally known as “dunder” names. These names are de
 
 Class-private names. Names in this category, when used within the context of a class definition, are re-written to use a mangled form to help avoid name clashes between “private” attributes of base and derived classes. See section [Identifiers (Names)](https://docs.python.org/3/reference/expressions.html#atom-identifiers).
 
-[Private Variables of classes.](https://docs.python.org/3/tutorial/classes.html#private-variables)
 
 ## Data Type
 
@@ -179,9 +178,11 @@ for i in range(len(a)):
 
 In most such cases, however, it is convenient to use the [`enumerate()`](https://docs.python.org/3/library/functions.html#enumerate "enumerate") function, see [Looping Techniques](https://docs.python.org/3/tutorial/datastructures.html#tut-loopidioms).
 
-## Extends & Implements
+## Classes
 
 >- [Classes](https://docs.python.org/zh-cn/3/tutorial/classes.html)
+>- [Class and instance Variables](https://docs.python.org/3/tutorial/classes.html#class-and-instance-variables)
+>- [Data classes which is similar with lombok](https://docs.python.org/3/library/dataclasses.html)
 
 Override Decorator for Static Typing
 

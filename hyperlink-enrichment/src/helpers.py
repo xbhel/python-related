@@ -109,6 +109,8 @@ class ImportHelper:
     def tests_dir_aliases(self, value: tuple):
         self.__tests_dir_aliases = value
 
+class TreeDict(dict):
+    pass
 
 if __name__ == "__main__":
     helper = ImportHelper()

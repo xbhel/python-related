@@ -1,4 +1,5 @@
 import re
+from abc import ABC, abstractmethod
 from enum import Enum
 
 import ahocorasick
@@ -42,6 +43,32 @@ class Anchor:
         )
 
 
+class BaseAnchorExtractor(ABC):
+    @abstractmethod
+    def extract(self, text: str) -> list[Anchor]:
+        """
+        Extract the anchors from the given text.
+        :params str text - the text to extract the anchors from.
+        :return list[Anchor] - the list of anchors extracted from the text.
+        """
+        raise NotImplementedError()
+
+
+class RegexAnchorExtractor(BaseAnchorExtractor):
+    def __init__(self, patterns: list[str]):
+        if patterns is None or len(patterns) == 0:
+            raise ValueError("The patterns must be not empty!")
+        self.patterns = patterns
+
+    def extract(self, text: str) -> list[Anchor]:
+        results = []
+        for pattern in self.patterns:
+            for m in re.finditer(pattern, text):
+                results.append(Anchor(m.group(0), m.start(), m.end()))
+        results.sort(key=lambda anchor: anchor.start_index)
+        return results
+
+
 def search(text: str, keywords: list) -> list[(str, int, int)]:
     """
     If overlapping keywords are given, the longest one will be returned. For example,
@@ -65,23 +92,5 @@ def search(text: str, keywords: list) -> list[(str, int, int)]:
     return results
 
 
-def search(text: str, pattern: str) -> list[(str, int, int)]:  # type: ignore
-    if not pattern:
-        raise RuntimeError("The pattern must be not none.")
-    if is_blank(text):
-        return
-    results = []
-    for matcher in re.finditer(pattern, text):
-        results.append((matcher.group(0), matcher.start(), matcher.end()))
-    return results
-
-
 def is_blank(text: str) -> bool:
     return isinstance(text, str) and text.isspace()
-
-
-print(search("hello <java> or <csharp>", "(<[^><]*>)"))
-list = (1, 2, 3)
-a, *b = list
-print(a)
-print(b)
