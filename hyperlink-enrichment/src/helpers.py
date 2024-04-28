@@ -1,3 +1,4 @@
+from collections import UserDict
 import inspect
 import logging
 import os
@@ -109,13 +110,20 @@ class ImportHelper:
     def tests_dir_aliases(self, value: tuple):
         self.__tests_dir_aliases = value
 
-class TreeDict(dict):
+
+class SortedDict(UserDict):
+    """
+    Implements a custom dict by extends UserDict instead of dict.
+    UserDict is a convenient class that acts as a wrapper around dictionary objects. 
+    It's part of the collections module. UserDict is designed to be subclassed, 
+    allowing you to create your own dictionary-like classes with customized behavior.
+    """
     pass
+
 
 if __name__ == "__main__":
     helper = ImportHelper()
     print(helper.get_root_path())
     print(helper.source_dir_aliases, helper.tests_dir_aliases)
-    helper.source_dir_aliases, helper.tests_dir_aliases = ('src',), ('test',)
+    helper.source_dir_aliases, helper.tests_dir_aliases = ("src",), ("test",)
     print(helper.source_dir_aliases, helper.tests_dir_aliases)
-

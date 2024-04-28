@@ -9,6 +9,16 @@
 > - [bisect - Array bisection algorithm - to implement a sorted list.](https://docs.python.org/zh-cn/2/library/bisect.html)
 > - [Sorted containers.](https://grantjenks.com/docs/sortedcontainers/)
 > - [Python functions](https://docs.python.org/zh-cn/3/library/functions.html#enumerate)
+> - [The Python Standard Library.](https://docs.python.org/3/library/index.html)
+> -📣 [The Hitchhiker’s Guide to Python - Structuring Your Project.](https://docs.python-guide.org/writing/structure/)
+> - [Building and Distributing Packages with Setuptools.](https://setuptools.pypa.io/en/latest/userguide/)
+> - [Best Practices in Structuring Python Projects.](https://dagster.io/blog/python-project-best-practices)
+> - Python Lint and Style.
+>   - [Ruff - An extremely fast Python linter and code formatter, written in Rust.](https://github.com/charliermarsh/ruff)
+>   - [Flake8 -  Your Tool For Style Guide Enforcement.](https://flake8.pycqa.org/en/latest/)
+>   - [SonarLint](https://docs.sonarsource.com/sonarcloud/improving/sonarlint/)
+>   - [Black](https://black.readthedocs.io/en/stable/)
+>   - [isort](https://pycqa.github.io/isort/)
 
 ## Setting up
 
@@ -119,7 +129,6 @@ System-defined names, informally known as “dunder” names. These names are de
 
 Class-private names. Names in this category, when used within the context of a class definition, are re-written to use a mangled form to help avoid name clashes between “private” attributes of base and derived classes. See section [Identifiers (Names)](https://docs.python.org/3/reference/expressions.html#atom-identifiers).
 
-
 ## Data Type
 
 ### Implement a TreeMap
@@ -177,6 +186,97 @@ for i in range(len(a)):
 ```
 
 In most such cases, however, it is convenient to use the [`enumerate()`](https://docs.python.org/3/library/functions.html#enumerate "enumerate") function, see [Looping Techniques](https://docs.python.org/3/tutorial/datastructures.html#tut-loopidioms).
+
+## [Compound statements](https://docs.python.org/3/reference/compound_stmts.html#)
+
+- [with statement](https://docs.python.org/zh-cn/3/reference/compound_stmts.html#with)
+
+### The with statement
+
+The [`with`](https://docs.python.org/3/reference/compound_stmts.html#with) statement is used to wrap the execution of a block with methods defined by a context manager (see section [With Statement Context Managers](https://docs.python.org/3/reference/datamodel.html#context-managers)). This allows common [`try`](https://docs.python.org/3/reference/compound_stmts.html#try)…[`except`](https://docs.python.org/3/reference/compound_stmts.html#except)…[`finally`](https://docs.python.org/3/reference/compound_stmts.html#finally) usage patterns to be encapsulated for convenient reuse.
+
+It ensures that certain operations are properly initialized and cleaned up, even if an exception occurs durng the execution of the block. Here's an example using the `with` statement with file handing:
+
+```python
+with open('example.txt', 'r') as file:
+ content = file.read()
+ print(content)
+```
+
+1. We use the `open()` function to open a file named 'example.txt' in read mode.
+2. We use the `with` statement to create a content manager for file handing. This ensures that the file is properly closed after the block of code executes, regardless of whether an exception occurs or not.
+3. Inside the `with` block, we read the contents of the file using the `read()` method and print them.
+4. Once the block of code is executed, the file is automatically closed by the content manager, even if an exception occurs within the block.
+
+## Collections
+
+ >- [collections](https://docs.python.org/3/library/collections.html)
+ >- [Itertools](https://docs.python.org/3/library/itertools.html)
+ >- [heapq](https://docs.python.org/3/library/heapq.html)
+ >- [ChainMap](https://docs.python.org/3/library/collections.html#chainmap-objects)
+ >- [Counter objects](https://docs.python.org/3/library/collections.html#counter-objects)
+ >- [deque objects](https://docs.python.org/3/library/collections.html#deque-objects)
+ >- [OrderedDict Objects](<https://docs.python.org/3/library/collections.html#ordereddict-objects>
+ >- [UserDict Objects](https://docs.python.org/3/library/collections.html#userdict-objects)
+ >- [UserListc Objects](https://docs.python.org/3/library/collections.html#userlist-objects)
+ >- [UserString Objects](https://docs.python.org/3/library/collections.html#userstring-objects)
+ >- [union two lists](https://www.geeksforgeeks.org/python-union-two-lists/#)
+
+### UserDict
+
+`UserDict` is a convenient class in Python that acts as a wrapper around dictionary objects. It's part of the `collections` module. `UserDict` is designed to be subclassed, allowing you to create your own dictionary-like classes with customized behavior.
+
+Here's a basic example of how to use `UserDict`:
+
+```python
+from collections import UserDict
+
+class MyDictionary(UserDict):
+    def __init__(self, initial_data=None, **kwargs):
+        super().__init__(initial_data, **kwargs)
+
+    def __setitem__(self, key, value):
+        print(f"Setting item: {key} -> {value}")
+        super().__setitem__(key, value)
+
+    def __getitem__(self, key):
+        print(f"Getting item: {key}")
+        return super().__getitem__(key)
+
+# Create an instance of MyDictionary
+my_dict = MyDictionary()
+
+# Add items to the dictionary
+my_dict['a'] = 1
+my_dict['b'] = 2
+
+# Access items in the dictionary
+print(my_dict['a'])
+print(my_dict['b'])
+
+# Output:
+# Setting item: a -> 1
+# Setting item: b -> 2
+# Getting item: a
+# 1
+# Getting item: b
+# 2
+```
+
+In this example, `MyDictionary` is a subclass of `UserDict`. It overrides the `__setitem__` and `__getitem__` methods to print messages whenever an item is set or retrieved from the dictionary. This demonstrates how you can customize the behavior of your dictionary-like class.
+
+You can also pass initial data to `MyDictionary` when creating an instance, just like you would with a regular dictionary:
+
+```python
+# Create an instance of MyDictionary with initial data
+my_dict = MyDictionary({'a': 1, 'b': 2})
+
+# Access items in the dictionary
+print(my_dict['a'])  # Output: Getting item: a\n1
+print(my_dict['b'])  # Output: Getting item: b\n2
+```
+
+`UserDict` simplifies the process of creating dictionary-like classes by providing a pre-defined structure and functionality, allowing you to focus on customizing behavior rather than implementing core dictionary operations.
 
 ## Classes
 
@@ -248,27 +348,6 @@ In this example:
 - When defining a subclass of `Shape`, we must implement all the abstract methods, otherwise, Python will raise a `TypeError` at runtime.
 
 By using abstract base classes, you can define interfaces in Python, ensuring that subclasses adhere to a specific set of methods while allowing flexibility in their implementation.
-
-## [Compound statements](https://docs.python.org/3/reference/compound_stmts.html#)
-
-- [with statement](https://docs.python.org/zh-cn/3/reference/compound_stmts.html#with)
-
-### The with statement
-
-The [`with`](https://docs.python.org/3/reference/compound_stmts.html#with) statement is used to wrap the execution of a block with methods defined by a context manager (see section [With Statement Context Managers](https://docs.python.org/3/reference/datamodel.html#context-managers)). This allows common [`try`](https://docs.python.org/3/reference/compound_stmts.html#try)…[`except`](https://docs.python.org/3/reference/compound_stmts.html#except)…[`finally`](https://docs.python.org/3/reference/compound_stmts.html#finally) usage patterns to be encapsulated for convenient reuse.
-
-It ensures that certain operations are properly initialized and cleaned up, even if an exception occurs durng the execution of the block. Here's an example using the `with` statement with file handing:
-
-```python
-with open('example.txt', 'r') as file:
- content = file.read()
- print(content)
-```
-
-1. We use the `open()` function to open a file named 'example.txt' in read mode.
-2. We use the `with` statement to create a content manager for file handing. This ensures that the file is properly closed after the block of code executes, regardless of whether an exception occurs or not.
-3. Inside the `with` block, we read the contents of the file using the `read()` method and print them.
-4. Once the block of code is executed, the file is automatically closed by the content manager, even if an exception occurs within the block.
 
 ## Decorator
 
