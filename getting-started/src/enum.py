@@ -1,10 +1,11 @@
-from enum import Enum
+from enum import Enum, auto
 
 
 class Color(Enum):
     RED = 1
     GREEN = 2
     BLUE = 3
+    YELLOW = auto() # auto generate a value
 
 
 # Access them by:

@@ -1,8 +1,13 @@
 import re
 from abc import ABC, abstractmethod
+from dataclasses import dataclass, field
 from enum import Enum
+from typing import overload
 
 import ahocorasick
+from helpers import isblank, isempty
+
+REGEX_OR = "|"
 
 
 class AnchorType(Enum):
@@ -15,12 +20,11 @@ class AnchorType(Enum):
     TRIAL_PROGRESS = 6
 
 
-class Anchor:
-    def __init__(self, value, start_index, end_index, type: AnchorType):
-        self.value = value
-        self.start_index = start_index
-        self.end_index = end_index
-        self.type = type
+@dataclass
+class Keyword:
+    value: str
+    start_index: int
+    end_index: int
 
     def overlaps_with(self, other: "Anchor") -> bool:
         """
@@ -42,21 +46,127 @@ class Anchor:
             self.start_index <= other.start_index and self.end_index >= other.end_index
         )
 
+@dataclass
+class PairedKeyword(Keyword):
+    value: str
+    start_index: int
+    end_index: int
+    parent: "PairedKeyword" = field(init=False, repr=False, default=None, compare=False)
+    children: list["PairedKeyword"] = None
 
-class BaseAnchorExtractor(ABC):
+    def add_child(self, child: "PairedKeyword"):
+        if self.children is None:
+            self.children = []
+        self.children.append(child)
+
+
+class Anchor(Keyword):
+    value: str
+    start_index: int
+    end_index: int
+    type: AnchorType
+    parent: "Anchor" = field(init=False, default=None)
+    version: str = field(init=False, default=None)
+
+
+class PairedKeywordExtractor:
+    def __init__(self, pairs: dict[str, str]):
+        if isempty(pairs):
+            raise ValueError("The pairs must be not empty.")
+        self.pair_set = frozenset(REGEX_OR.join(pair) for pair in pairs)
+        self.pair_pattern = re.compile(REGEX_OR.join(self.pair_set))
+
+    def extract(self, text: str) -> list[PairedKeyword]:
+        """
+        Extract the keywords enclosed within pairs from the given text.
+        :params str text - the text to extract the keywords from.
+        :return list[PairedKeyword] - the list of keywords extracted from the text.
+        """
+        if isblank(text):
+            return []
+
+        stack: list[tuple[int, str]] = []
+        child_with_parent_index_dict: dict[int, int] = {}
+        start_index_with_word_dict: dict[int, PairedKeyword] = {}
+        for matcher in self.pair_pattern.finditer(text):
+            cur = (matcher.start(), matcher.group())
+            if len(stack) != 0 and self.ispair(
+                (top := stack[len(stack) - 1])[1], cur[1]
+            ):
+                stack.pop()
+                start_index, end_index = top[0], cur[0] + 1
+                paired_word = PairedKeyword(
+                    text[start_index:end_index], start_index, end_index
+                )
+                start_index_with_word_dict[start_index] = paired_word
+                # That means either the pair is nested or half of the pair is missing.
+                if len(stack) != 0:
+                    (parent_candidate_index, _) = stack[len(stack) - 1]
+                    child_with_parent_index_dict[start_index] = parent_candidate_index
+            else:
+                stack.append(cur)
+        # process the nested pair.
+        for child_index, parent_index in child_with_parent_index_dict.items():
+            child = start_index_with_word_dict[child_index]
+            parent = start_index_with_word_dict[parent_index]
+            if child and parent:
+                child.parent = parent
+                parent.add_child(child)
+        return [
+            v
+            for _, v in sorted(
+                start_index_with_word_dict.items(), key=lambda entry: entry[0]
+            )
+        ]
+
+    def ispair(self, symbol1, symbol2) -> bool:
+        return (
+            f"{symbol1}{REGEX_OR}{symbol2}" in self.pair_set
+            or f"{symbol2}{REGEX_OR}{symbol1}" in self.pair_set
+        )
+
+
+class AbsAnchorExtractor(ABC):
+    @overload
     @abstractmethod
-    def extract(self, text: str) -> list[Anchor]:
+    def extract(self, text: str):
         """
         Extract the anchors from the given text.
         :params str text - the text to extract the anchors from.
         :return list[Anchor] - the list of anchors extracted from the text.
         """
-        raise NotImplementedError()
+
+    @overload
+    def extract(
+        self, text: str, dependencies: dict[AnchorType, list[Anchor]]
+    ) -> list[Anchor]:
+        if isblank(text):
+            return []
+        anchors = self.extract(text)
+        if any(isempty(e) for e in (anchors, dict)):
+            return anchors
+        for d_type, d_anchors in dependencies.items:
+            if not isempty(d_anchors):
+                self._remove_overlap_anchors_with_dependencies(anchors, d_anchors)
+                self._associate_anchors_with_dependencies(anchors, (d_type, d_anchors))
+
+    @abstractmethod
+    def _associate_anchors_with_dependencies(
+        self, anchors: list[Anchor], dep: tuple[AnchorType, list[Anchor]]
+    ): ...
+
+    def _remove_overlap_anchors_with_dependencies(
+        self, anchors: list[Anchor], dep_anchors: list[Anchor]
+    ):
+        for anchor in iter(anchors):
+            any(
+                anchor.overlaps_with(d_anchor) for d_anchor in dep_anchors
+            ) and anchors.remove(anchor)
 
 
-class RegexAnchorExtractor(BaseAnchorExtractor):
+class RegexAnchorExtractor(AbsAnchorExtractor):
     def __init__(self, patterns: list[str]):
-        if patterns is None or len(patterns) == 0:
+        if isempty(patterns):
             raise ValueError("The patterns must be not empty!")
         self.patterns = patterns
 
@@ -75,14 +185,12 @@ def search(text: str, keywords: list) -> list[(str, int, int)]:
     if the keywords are ['Company', 'Company Law'], since the 'Company Law' is longer
     and contains the shorter keyword 'Company', the function will return 'Company Law'.
     """
-    if is_blank(text):
+    if isblank(text):
         return
-
     automaton = ahocorasick.Automaton()
     for keyword in keywords:
         automaton.add_word(keyword, keyword)
     automaton.make_automaton()
-
     results = []
     for end_index, keyword in automaton.iter_long(text):
         # ensure the ending index is exclusive.
@@ -90,7 +198,3 @@ def search(text: str, keywords: list) -> list[(str, int, int)]:
         start_index = end_index - len(keyword)
         results.append((keyword, start_index, end_index))
     return results
-
-
-def is_blank(text: str) -> bool:
-    return isinstance(text, str) and text.isspace()
