@@ -59,7 +59,7 @@ class PairedKeyword(Keyword):
             self.children = []
         self.children.append(child)
 
-
+@dataclass
 class Anchor(Keyword):
     value: str
     start_index: int

@@ -1,3 +1,7 @@
+"""
+The module provide a helper to utility import other modules.
+"""
+
 import inspect
 import logging
 import os
@@ -36,14 +40,12 @@ class ImportHelper:
         root_path = self.get_root_path()
         for module_path in module_paths:
             if os.path.exists(abspath := os.path.join(root_path, module_path)):
-                logger.info("Locate the module in path: {}.".format(abspath))
+                logger.info(f"Locate the module in path: {abspath}")
                 sys.path.append(abspath)
                 return
             else:
                 logger.error(
-                    "Cannot locate the {} module, please ensure it is a valid module.".format(
-                        abspath,
-                    )
+                    f"Cannot locate the {abspath} module, please ensure it is a valid module."
                 )
 
     def import_src_module(self):
