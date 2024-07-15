@@ -46,6 +46,7 @@ class Keyword:
             self.start_index <= other.start_index and self.end_index >= other.end_index
         )
 
+
 @dataclass
 class PairedKeyword(Keyword):
     value: str
@@ -58,6 +59,7 @@ class PairedKeyword(Keyword):
         if self.children is None:
             self.children = []
         self.children.append(child)
+
 
 @dataclass
 class Anchor(Keyword):

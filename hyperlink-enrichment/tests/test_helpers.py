@@ -11,7 +11,7 @@ class ReadonlyNavigableDictTestCase(unittest.TestCase):
 
     def setUp(self):
         self.rn_dict = ReadonlyNavigableDict(
-            [(11, "tom"), (88, "jack"), (10, "pony"), (1, "jerry")]
+            dict([(11, "tom"), (88, "jack"), (10, "pony"), (1, "jerry")])
         )
 
     def test_floor_key(self):

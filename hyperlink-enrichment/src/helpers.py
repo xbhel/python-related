@@ -2,9 +2,6 @@ import bisect
 from collections import UserDict
 from typing import OrderedDict, Sized
 
-from sortedcontainers import SortedDict
-
-
 def isblank(text: str) -> bool:
     return text is None or text.isspace()
 
@@ -71,7 +68,3 @@ class ReadonlyNavigableDict(UserDict):
         raise AttributeError(
             "The ReadonlyNavigableDict does not support the modify operation."
         )
-
-
-class NavigableDict(SortedDict):
-    pass
