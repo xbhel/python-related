@@ -29,13 +29,15 @@ unenriched_texts = (
 
 
 def lambda_handler():
-    delimiters = "[。？！]"
-
     # 1.concat all text nodes into a big string.
-    big_string = str().join(unenriched_texts)
+    body_text = str().join(unenriched_texts)
 
     # 2.spilt the str by specified delimiters.
-    sentences = re.split(delimiters, big_string)
+    sentences = re.split(r"([。？！])", body_text)
+    sentences = [''.join(vd) for vd in zip(sentences[0::2], sentences[1::2])]
+    sentences.append('')  # ensure the last sentence is not missed.
+
+
     extractor = PairedKeywordExtractor((("《", "》"),))
 
     # 3.record the context of text node.
