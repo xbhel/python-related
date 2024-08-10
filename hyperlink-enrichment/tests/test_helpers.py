@@ -5,7 +5,7 @@ Note: You will catch a error if run directly a module which use the relative imp
 """
 
 import unittest
-from ..src.helpers import ReadonlyNavigableDict
+from ..src.data_structure import ReadonlyNavigableDict
 
 class ReadonlyNavigableDictTestCase(unittest.TestCase):
 

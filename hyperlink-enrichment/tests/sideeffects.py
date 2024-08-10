@@ -6,7 +6,7 @@ from importmds import ImportHelper
 ENV_MODE = os.getenv("ENV_MODE", "test")
 
 def setup_logging():
-    if ENV_MODE == "dev":
+    if ENV_MODE in ["dev", "test"]:
         logging.basicConfig(
             level=os.getenv("LOG_LEVEL", logging.DEBUG),
             format="%(asctime)s - %(levelname)s - %(message)s",

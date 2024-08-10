@@ -1,6 +1,6 @@
 import unittest
 
-import side_effects  # noqa: F401 - It's a side-effects module.
+import tests.sideeffects # noqa: F401 - It's a side-effects module.
 from extract_anchor import PairedKeyword as PKW
 from extract_anchor import PairedKeywordExtractor
 
@@ -35,7 +35,6 @@ class PairedKeywordExtractorTestCase(unittest.TestCase):
         parent.add_child(child)
         self.assertEqual(keywords, [PKW("<example text>", 11, 25), parent, child])
 
-
 def suite():
     """
     DeprecationWarning: unittest.makeSuite() is deprecated and will be removed in Python 3.13. Please use unittest.TestLoader.loadTestsFromTestCase() instead.
@@ -43,7 +42,9 @@ def suite():
     suite.addTest(unittest.makeSuite(PairedKeywordExtractorTestCase))
     """
     loader = unittest.TestLoader()
-    suite = loader.loadTestsFromTestCase(PairedKeywordExtractorTestCase)
+    suite = unittest.TestSuite()
+    tests = loader.loadTestsFromTestCase(PairedKeywordExtractorTestCase)
+    suite.addTest(tests)
     return suite
 
 

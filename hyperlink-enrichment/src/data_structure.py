@@ -1,13 +1,5 @@
 import bisect
-from collections import UserDict
-from typing import OrderedDict, Sized
-
-def isblank(text: str) -> bool:
-    return text is None or text.isspace()
-
-
-def isempty(coll: Sized) -> bool:
-    return coll is None or len(coll) == 0
+from collections import UserDict, OrderedDict
 
 
 class ReadonlyNavigableDict(UserDict):

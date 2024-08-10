@@ -5,7 +5,10 @@ from enum import Enum
 from typing import overload
 
 import ahocorasick
-from helpers import isblank, isempty
+from utils import StrUtil, IterUtil
+
+isblank = StrUtil.isblank
+isempty = IterUtil.isempty
 
 REGEX_OR = "|"
 
