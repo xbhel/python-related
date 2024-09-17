@@ -568,3 +568,28 @@ In this example:
 - You can also call methods defined within the enum members (`Color.RED.rgb_value()`).
 
 By adding attributes and methods to enum members, you can make enums more versatile and useful for various purposes in your code.
+
+
+## Tests for Python
+
+```python
+import unittest
+
+def suite(): 
+    test_cases = (
+        TimeUtilTestCase,
+        StrUtilTestCase,
+    )
+    loader = unittest.TestLoader()
+    test_suite = unittest.TestSuite()
+    for test_case in test_cases:
+        tests = loader.loadTestsFromTestCase(test_case)
+        test_suite.addTests(tests)
+    return test_suite
+
+
+if __name__ == '__main__':
+    runner = unittest.TextTestRunner()
+    runner.run(suite())
+```
+

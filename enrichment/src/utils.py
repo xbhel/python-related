@@ -8,16 +8,16 @@ class TimeUtil:
     # ZONE_ASIA_SHANGHAI = zoneinfo.ZoneInfo("Asia/Shanghai")
     ASIA_SHANGHAI = timezone(timedelta(hours=8), 'Asia/Shanghai')
 
-    @classmethod
+    @staticmethod
     def atstartday(cls, dt: datetime, tz:tzinfo = None) -> datetime:
         # return a new object.
         return dt.replace(hour=0, minute=0, second=0, microsecond=0, tzinfo=tz)
 
-    @classmethod
-    def fromtimestamp(cls, epochseconds: int, tz: tzinfo = None) -> datetime:
-        return datetime.fromtimestamp(int(epochseconds), tz)
+    @staticmethod
+    def fromtimestamp(epoch_seconds: int, tz: tzinfo = None) -> datetime:
+        return datetime.fromtimestamp(int(epoch_seconds), tz)
 
-    @classmethod
+    @staticmethod
     def fromstring(cls, date_string: str, fmt: str = None) -> datetime:
         return (
             datetime.strptime(date_string, fmt)
@@ -25,13 +25,13 @@ class TimeUtil:
             else datetime.fromisoformat(date_string)
         )
 
-    @classmethod
+    @staticmethod
     def toepochseconds(cls, dt: datetime, tz: tzinfo = None) -> int:
         # datetime.timestamp() converts this datetime object to a Unix timestamp in seconds since the epoch.
         # int() converts the floating-point timestamp to an integer, if needed.
         return int(dt.astimezone(tz).timestamp() if tz else dt.timestamp())
 
-    @classmethod
+    @staticmethod
     def str2epochseconds(
         cls, date_string: str, fmt: str = None, tz: tzinfo = None
     ) -> int:

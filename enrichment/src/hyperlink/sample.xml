@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<p>
+    <text>
+        1关于《<emph1>刑法1》</emph1>1中明确规定。
+        2关于<emph2>《刑法2</emph2>》2中明确规定。
+        3关于《<emph3>刑法3</emph3>》3中明确规定。
+        4关于<emph4>《刑法4》</emph4>4中明确规定。
+        <a>5a</a>5关于<emph5>《刑法5》</emph5>5中明确规定。
+        <a>&lt;emph6&gt;《6a</a> &lt;/emph6&gt;》
+    </text>
+</p>
